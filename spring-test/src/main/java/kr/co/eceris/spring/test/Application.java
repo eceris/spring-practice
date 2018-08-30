@@ -1,12 +1,12 @@
-package kr.co.eceris.junit;
+package kr.co.eceris.spring.test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JunitApplication {
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(JunitApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 }

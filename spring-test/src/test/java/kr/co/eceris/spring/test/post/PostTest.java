@@ -1,13 +1,13 @@
-package kr.co.eceris.junit.post;
+package kr.co.eceris.spring.test.post;
 
-import kr.co.eceris.junit.JunitApplicationTests;
+import kr.co.eceris.spring.test.ApplicationTests;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class PostTest extends JunitApplicationTests {
+public class PostTest extends ApplicationTests {
 
     @Autowired
     private PostService service;

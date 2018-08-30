@@ -1,4 +1,4 @@
-package kr.co.eceris.junit;
+package kr.co.eceris.spring.test;
 
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
@@ -8,5 +8,5 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Ignore("Inherit this if context needed")
-public class JunitApplicationTests {
+public class ApplicationTests {
 }

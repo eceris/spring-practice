@@ -1,4 +1,4 @@
-package kr.co.eceris.junit.post;
+package kr.co.eceris.spring.test.post;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
