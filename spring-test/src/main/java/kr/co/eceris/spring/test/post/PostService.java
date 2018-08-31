@@ -29,4 +29,8 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    void delete() {
+        repository.deleteAll();
+    }
+
 }
