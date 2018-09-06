@@ -4,7 +4,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import lombok.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,20 +21,31 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * REST API를 이용한 SENDER
+ */
 @Service
 @RequiredArgsConstructor
-public class FcmService {
-    private static final Logger logger = LoggerFactory.getLogger(FcmService.class);
+public class HttpSender extends Sender{
+    private static final Logger logger = LoggerFactory.getLogger(HttpSender.class);
 
     private static final RestTemplate REST_TEMPLATE = new RestTemplate();
-    private static final String PRIVATE_KEY_PATH = "classpath:static/fcm-test-d3b8e-firebase-adminsdk-cwcn6-1d2adf6b0a.json";
-    private static final String SEND_URL = "https://fcm.googleapis.com/v1/projects/fcm-test-d3b8e/messages:send";
-    private static final String FIREBASE_MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
-    private static final String DEVICE_PACKAGE_NAME = "kr.co.eceris.fcm.test";
 
     private final ResourceLoader resourceLoader;
+
+    /**
+     * 정보를 fcm을 통해 보낸다.
+     *
+     * @param title 제목
+     * @param content 컨텐츠
+     * @param token 메시지를 보낼 타겟 디바이스의 토큰
+     */
+    public void send(String title, String content, @NonNull String token) {
+        Message message = assembleMessage(title, content, token);
+        logger.debug("message assembled : {}", message);
+        send(message);
+    }
 
     /**
      * message 를 보내기 위한 인증토큰을 조회 혹은 갱신
@@ -81,14 +91,13 @@ public class FcmService {
                 .notification(Notification.of(title, message))
                 .build();
 
-        return Message.of(token, null, notification, android);
+        return Message.builder().token(token)
+                .data(null)
+                .notification(notification)
+                .android(android).build();
     }
 
-    public void send(String title, String content, String token) {
-        Message message = assembleMessage(title, content, token);
-        logger.debug("message assembled : {}", message);
-        sendToFCM(message);
-    }
+
 
 
     /**
@@ -96,16 +105,16 @@ public class FcmService {
      *
      * @param body
      */
-    private void sendToFCM(Message body) {
+    private ResponseEntity send(@NonNull Message body) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("message", body);
-        HttpEntity<Map> entity = new HttpEntity<>(params, assembleHttpHeader());
-        ResponseEntity<String> result = REST_TEMPLATE.postForEntity(SEND_URL, entity, String.class);
+        ResponseEntity<String> result = REST_TEMPLATE.postForEntity(SEND_URL, new HttpEntity<>(params, assembleHttpHeader()), String.class);
         if (result.getStatusCode().is2xxSuccessful()) {
-            logger.info("succeed to send via FCM, result message : {}", result.getBody());
+            logger.debug("succeed to send via FCM, result message : {}", result.getBody());
         } else {
-            logger.info("failed to send via FCM, result code : {}, result message : {}", result.getStatusCode(), result.getBody());
+            logger.debug("failed to send via FCM, result code : {}, result message : {}", result.getStatusCode(), result.getBody());
         }
+        return result;
     }
 
     /**
@@ -120,8 +129,8 @@ public class FcmService {
         return httpHeaders;
     }
 
-    @Value(staticConstructor = "of")
-    @ToString
+    @Value
+    @Builder
     static class Message {
         @NonNull
         private String token; //Registration token to send a message to. // 어느 디바이스인지? 디바이스 토큰
@@ -153,6 +162,10 @@ public class FcmService {
     enum AndroidMessagePriority {
         NORMAL, HIGH
     }
+
+
+//    https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CreatingtheNotificationPayload.html#//apple_ref/doc/uid/TP40008194-CH10-SW1
+
 
 
 }

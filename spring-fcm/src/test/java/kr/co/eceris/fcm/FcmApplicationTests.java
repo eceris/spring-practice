@@ -3,7 +3,6 @@ package kr.co.eceris.fcm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.NoFixedFacet;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -78,7 +77,7 @@ public class FcmApplicationTests {
         String jsonString = mapper.writeValueAsString(params);
         System.out.println(jsonString);
 
-                HttpHeaders httpHeaders = new HttpHeaders();
+        HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add("Authorization", "Bearer " + getAccessToken());
         HttpEntity<String> entity = new HttpEntity<>(jsonString, httpHeaders);
@@ -97,6 +96,7 @@ public class FcmApplicationTests {
         private HashMap<String, String> data; //Input only. Arbitrary key/value payload.
         private Notification notification; //Input only. Basic notification template to use across all platforms.
         private Android android;
+
         public static Message of(String name, String token, HashMap<String, String> data, Notification notification, Android android) {
             return new Message(name, token, data, notification, android);
         }
@@ -111,6 +111,7 @@ public class FcmApplicationTests {
         private final String restricted_package_name;
         private final HashMap<String, Object> data; //Input only. Arbitrary key/value payload.
         private final Notification notification;
+
         public static Android of(String collapse_key, AndroidMessagePriority priority, String ttl, HashMap<String, Object> data, Notification notification) {
             String restricted_package_name = "kr.co.eceris.fcm.test";
             return new Android(collapse_key, priority, ttl, restricted_package_name, data, notification);
@@ -120,11 +121,13 @@ public class FcmApplicationTests {
     enum AndroidMessagePriority {
         NORMAL, HIGH;
     }
+
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @Getter
     private static class Notification {
         private final String title;
         private final String body;
+
         public static Notification of(String title, String body) {
             return new Notification(title, body);
         }

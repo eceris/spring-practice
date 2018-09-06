@@ -50,6 +50,12 @@
             <artifactId>google-api-client</artifactId>
             <version>1.23.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>6.2.0</version>
+        </dependency>
     </dependencies>
 
     <build>
